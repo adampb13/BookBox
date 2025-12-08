@@ -21,7 +21,10 @@ public class UserAccount implements UserDetails {
     private String email;
 
     @Column(nullable = false)
-    private String password; // zahaszowane
+    private String password; // zahashowane
+
+    @Column(nullable = false)
+    private String fullName;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -33,9 +36,10 @@ public class UserAccount implements UserDetails {
     public UserAccount() {
     }
 
-    public UserAccount(String email, String password, Role role) {
+    public UserAccount(String email, String password, String fullName, Role role) {
         this.email = email;
         this.password = password;
+        this.fullName = fullName;
         this.role = role;
         this.createdAt = LocalDateTime.now();
     }
@@ -44,9 +48,9 @@ public class UserAccount implements UserDetails {
         return id;
     }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getEmail() {
         return email;
@@ -56,6 +60,7 @@ public class UserAccount implements UserDetails {
         this.email = email;
     }
 
+    // UserDetails: username = email
     @Override
     public String getUsername() {
         return email;
@@ -69,6 +74,14 @@ public class UserAccount implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public Role getRole() {
@@ -87,7 +100,6 @@ public class UserAccount implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // ROLE_USER / ROLE_ADMIN
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 

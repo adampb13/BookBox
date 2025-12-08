@@ -21,11 +21,13 @@ public class AdminInitializer implements CommandLineRunner {
         String adminEmail = "admin@bookbox.local";
         if (!userRepository.existsByEmailIgnoreCase(adminEmail)) {
             UserAccount admin = new UserAccount(
-                    adminEmail,
-                    passwordEncoder.encode("admin123"),
-                    Role.ADMIN
+                adminEmail,
+                passwordEncoder.encode("admin123"),
+                "System Administrator",
+                Role.ADMIN
             );
-            userRepository.save(admin);
-        }
+        userRepository.save(admin);
     }
+}
+
 }

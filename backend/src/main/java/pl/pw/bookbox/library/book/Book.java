@@ -1,5 +1,5 @@
 package pl.pw.bookbox.library.book;
-
+import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import pl.pw.bookbox.library.category.Category;
 
@@ -48,7 +48,14 @@ public class Book {
         this.totalCopies = totalCopies;
         this.availableCopies = availableCopies;
     }
+    @Column(nullable = true)
+    private String publisher;     // wydawca
 
+    @Column(nullable = false)
+    private Double rating = 0.0;  // prosta średnia ocena (0–5, na start 0)
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();    
     // gettery/settery
 
     public Long getId() {
@@ -113,5 +120,28 @@ public class Book {
 
     public void setAvailableCopies(Integer availableCopies) {
         this.availableCopies = availableCopies;
+    }
+    public String getPublisher() {
+    return publisher;
+}
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

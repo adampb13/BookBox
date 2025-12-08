@@ -1,6 +1,5 @@
 package pl.pw.bookbox.library.book;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -12,15 +11,21 @@ public class CreateBookRequest {
     @NotBlank
     private String author;
 
+    @NotNull
     private Integer publishYear;
 
+    @NotBlank
     private String isbn;
 
+    @NotNull
     private Long categoryId;
 
     @NotNull
-    @Min(1)
     private Integer totalCopies;
+
+    private Integer availableCopies;
+
+    private String publisher;
 
     public CreateBookRequest() {
     }
@@ -71,5 +76,21 @@ public class CreateBookRequest {
 
     public void setTotalCopies(Integer totalCopies) {
         this.totalCopies = totalCopies;
+    }
+
+    public Integer getAvailableCopies() {
+        return availableCopies;
+    }
+
+    public void setAvailableCopies(Integer availableCopies) {
+        this.availableCopies = availableCopies;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
     }
 }

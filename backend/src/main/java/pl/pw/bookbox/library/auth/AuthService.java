@@ -29,22 +29,24 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmailIgnoreCase(request.getEmail())) {
-            throw new RuntimeException("Email already in use");
-        }
-
-        String hashed = passwordEncoder.encode(request.getPassword());
-        UserAccount user = new UserAccount(
-                request.getEmail(),
-                hashed,
-                Role.USER
-        );
-        userRepository.save(user);
-
-        String token = jwtService.generateToken(user);
-
-        return new AuthResponse(token, user.getEmail(), user.getRole().name());
+    if (userRepository.existsByEmailIgnoreCase(request.getEmail())) {
+        throw new RuntimeException("Email already in use");
     }
+
+    String hashed = passwordEncoder.encode(request.getPassword());
+    UserAccount user = new UserAccount(
+            request.getEmail(),
+            hashed,
+            request.getFullName(),
+            Role.USER
+    );
+    userRepository.save(user);
+
+    String token = jwtService.generateToken(user);
+
+    return new AuthResponse(token, user.getEmail(), user.getRole().name());
+}
+
 
     public AuthResponse login(AuthRequest request) {
         Authentication auth = authenticationManager.authenticate(

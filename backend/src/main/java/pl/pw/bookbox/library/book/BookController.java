@@ -54,4 +54,24 @@ public class BookController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping("/search")
+    public List<Book> searchBooks(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Integer yearFrom,
+            @RequestParam(required = false) Integer yearTo,
+            @RequestParam(required = false) Boolean available,
+            @RequestParam(required = false, defaultValue = "title") String sort
+    ) {
+        return bookService.advancedSearch(
+                title,
+                author,
+                categoryId,
+                yearFrom,
+                yearTo,
+                available,
+                sort
+        );
+    }
 }

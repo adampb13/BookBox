@@ -13,6 +13,7 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = true)
     private String description;
 
     public Category() {
@@ -22,8 +23,6 @@ public class Category {
         this.name = name;
         this.description = description;
     }
-
-    // gettery/settery
 
     public Long getId() {
         return id;
@@ -36,10 +35,6 @@ public class Category {
     public void setName(String name) {
         this.name = name;
     }
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
     public String getDescription() {
         return description;
