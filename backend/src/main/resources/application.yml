@@ -22,3 +22,8 @@ spring:
 
 server:
   port: 8080
+
+bookbox:
+  jwt:
+    secret: "super_tajny_klucz_jwt_ktory_ma_wiecej_niz_32_znaki_123456"
+    expiration-ms: 86400000  # 1 dzień

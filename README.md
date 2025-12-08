@@ -14,3 +14,5 @@
 - `backend/` – aplikacja Spring Boot
 - `frontend/` – aplikacja React
 - `docker-compose.yml` – uruchamianie całego stacku
+
+## Pełna specyfikacja znajduje się w pliku "MTAB.pdf"
