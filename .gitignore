@@ -1,0 +1,78 @@
+############################
+# OGÓLNE
+############################
+
+# Systemowe
+.DS_Store
+Thumbs.db
+
+# Pliki tymczasowe / edytorów
+*.swp
+*.swo
+*.tmp
+*.log
+
+############################
+# BACKEND (Java / Maven / Spring Boot)
+############################
+
+# Katalogi budowania
+target/
+out/
+
+# Pliki IDE (IntelliJ / Eclipse / NetBeans)
+*.iml
+*.ipr
+*.iws
+.idea/
+.project
+.classpath
+.settings/
+.nb-configuration.xml
+
+# Pliki lokalnej konfiguracji
+hs_err_pid*
+replay_pid*
+
+############################
+# FRONTEND (Node / React / Vite)
+############################
+
+# Zależności
+node_modules/
+
+# Build / cache
+dist/
+dist-ssr/
+*.local
+.vite/
+
+# Logi narzędzi JS
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+############################
+# ŚRODOWISKA / SECRETY
+############################
+
+.env
+.env.*
+!.env.example
+
+############################
+# PYTHON / VENV (na wszelki wypadek)
+############################
+
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+############################
+# DOCKER / INNE
+############################
+
+# Lokalne dane / wolumeny, jeśli kiedyś je będziesz trzymać w repo
+docker-data/
