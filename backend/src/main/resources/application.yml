@@ -3,10 +3,10 @@ spring:
     name: bookbox-backend
 
   datasource:
-    url: jdbc:h2:mem:bookboxdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://db:3306/bookbox?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: bookbox
+    password: bookbox
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
@@ -15,15 +15,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
-  h2:
-    console:
-      enabled: true
-
-server:
-  port: 8080
+        dialect: org.hibernate.dialect.MySQLDialect
 
 bookbox:
   jwt:
     secret: "super_tajny_klucz_jwt_ktory_ma_wiecej_niz_32_znaki_123456"
-    expiration-ms: 86400000  # 1 dzień
+    expiration-ms: 86400000
+
+server:
+  port: 8080
