@@ -6,6 +6,7 @@ export default function Register() {
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [message, setMessage] = useState<string | null>(null)
+  const [messageType, setMessageType] = useState<'error'|'success'|null>(null)
 
   async function submit(e:React.FormEvent) {
     e.preventDefault()
@@ -13,7 +14,8 @@ export default function Register() {
       const user = await registerUser(email, password, name)
       localStorage.setItem('bookbox_user_id', user.id)
       setMessage('Registered and logged in')
-    } catch (e:any) { setMessage(e.message) }
+      setMessageType('success')
+    } catch (e:any) { setMessage(e.message); setMessageType('error') }
   }
 
   return (
@@ -25,7 +27,7 @@ export default function Register() {
         <input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
         <button className="btn" type="submit">Register</button>
       </form>
-      {message && <div>{message}</div>}
+      {message && <div className={`message ${messageType==='error' ? 'error' : messageType==='success' ? 'success' : ''}`}>{message}</div>}
     </div>
   )
 }

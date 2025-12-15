@@ -5,6 +5,7 @@ export default function Books() {
   const [books, setBooks] = useState<any[]>([])
   const [query, setQuery] = useState('')
   const [message, setMessage] = useState<string | null>(null)
+  const [messageType, setMessageType] = useState<'error'|'success'|null>(null)
 
   useEffect(() => { load() }, [])
 
@@ -12,7 +13,7 @@ export default function Books() {
     try {
       const data = await fetchBooks()
       setBooks(data)
-    } catch (e:any) { setMessage(e.message) }
+    } catch (e:any) { setMessage(e.message); setMessageType('error') }
   }
 
   async function doSearch(e: React.FormEvent) {
@@ -20,36 +21,48 @@ export default function Books() {
     try {
       const data = await fetchBooks(query)
       setBooks(data)
-    } catch (e:any) { setMessage(e.message) }
+    } catch (e:any) { setMessage(e.message); setMessageType('error') }
   }
 
   async function loan(bookId:number) {
     const userId = Number(localStorage.getItem('bookbox_user_id'))
-    if (!userId) { setMessage('Please login to create a loan'); return }
+    if (!userId) { setMessage('Please login to create a loan'); setMessageType('error'); return }
     try {
       await createLoan(userId, bookId)
       setMessage('Loan created')
+      setMessageType('success')
       load()
-    } catch (e:any) { setMessage(e.message) }
+    } catch (e:any) { setMessage(e.message); setMessageType('error') }
   }
 
   return (
     <div className="container">
-      <h2>Books</h2>
-      <form onSubmit={doSearch} style={{marginBottom:12}}>
-        <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search..." />
+      <div className="page-header">
+        <h2>Books</h2>
+      </div>
+
+      <form className="search-row" onSubmit={doSearch}>
+        <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search by title, author or category..." />
         <button className="btn" type="submit">Search</button>
       </form>
-      {message && <div style={{color:'red'}}>{message}</div>}
-      {books.map(b => (
-        <div className="book" key={b.id}>
-          <div><strong>{b.title}</strong> by {b.author}</div>
-          <div>Category: {b.category} — Available: {b.available ? 'Yes' : 'No'}</div>
-          <div style={{marginTop:8}}>
-            {b.available && <button className="btn" onClick={() => loan(b.id)}>Loan</button>}
+
+      {message && <div className={`message ${messageType==='error' ? 'error' : messageType==='success' ? 'success' : ''}`}>{message}</div>}
+
+      <div className="books-grid">
+        {books.map(b => (
+          <div className="book" key={b.id}>
+            <div className="thumb">{b.title ? b.title.charAt(0) : 'B'}</div>
+            <div className="book-details">
+              <strong>{b.title}</strong>
+              <div className="book-meta">by {b.author} — {b.category}</div>
+              <div className="book-actions">
+                <span className={`badge ${b.available ? 'available' : 'unavailable'}`}>{b.available ? 'Available' : 'Not available'}</span>
+                {b.available && <button style={{marginLeft:12}} className="btn" onClick={() => loan(b.id)}>Loan</button>}
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }

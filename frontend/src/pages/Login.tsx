@@ -5,6 +5,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState<string | null>(null)
+  const [messageType, setMessageType] = useState<'error'|'success'|null>(null)
 
   async function submit(e:React.FormEvent) {
     e.preventDefault()
@@ -12,7 +13,8 @@ export default function Login() {
       const user = await loginUser(email, password)
       localStorage.setItem('bookbox_user_id', user.id)
       setMessage('Logged in')
-    } catch (e:any) { setMessage(e.message) }
+      setMessageType('success')
+    } catch (e:any) { setMessage(e.message); setMessageType('error') }
   }
 
   return (
@@ -23,7 +25,7 @@ export default function Login() {
         <input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
         <button className="btn" type="submit">Login</button>
       </form>
-      {message && <div>{message}</div>}
+      {message && <div className={`message ${messageType==='error' ? 'error' : messageType==='success' ? 'success' : ''}`}>{message}</div>}
     </div>
   )
 }

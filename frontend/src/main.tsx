@@ -11,10 +11,13 @@ function App() {
   return (
     <BrowserRouter>
       <nav className="nav">
-        <Link to="/">Books</Link>
-        <Link to="/register">Register</Link>
-        <Link to="/login">Login</Link>
-        <Link to="/my-loans">My Loans</Link>
+        <Link to="/" className="brand">BookBox</Link>
+        <div style={{display:'flex',gap:12}}>
+          <Link to="/">Books</Link>
+          <Link to="/register">Register</Link>
+          <Link to="/login">Login</Link>
+          <Link to="/my-loans">My Loans</Link>
+        </div>
       </nav>
       <Routes>
         <Route path="/" element={<Books />} />
