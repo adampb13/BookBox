@@ -1,20 +1,26 @@
 spring:
   application:
     name: bookbox-backend
+
   datasource:
-    url: jdbc:mysql://db:3306/bbox_library
-    username: appuser
-    password: apppass
+    url: jdbc:mysql://db:3306/bookbox?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: bookbox
+    password: bookbox
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
-    defer-datasource-initialization: true
     show-sql: true
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+
+bookbox:
+  jwt:
+    secret: "super_tajny_klucz_jwt_ktory_ma_wiecej_niz_32_znaki_123456"
+    expiration-ms: 86400000
 
 server:
   port: 8080
