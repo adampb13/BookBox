@@ -15,4 +15,13 @@
 - `frontend/` – aplikacja React
 - `docker-compose.yml` – uruchamianie całego stacku
 
-## Pełna specyfikacja znajduje się w pliku "MTAB.pdf"
+## Potrzebne narzedzia:
+docker
+
+## Uruchomienie
+```powershell
+docker compose up --build
+```
+served on http://localhost:3000
+
+## Pełna specyfikacja w pliku MTAB.pdf

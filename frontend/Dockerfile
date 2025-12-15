@@ -1,16 +1,13 @@
-# 1. Build frontu
-FROM node:20-alpine AS build
+FROM node:18-alpine as build
 WORKDIR /app
-
-COPY package*.json ./
-RUN npm install
-
+# copy package files first for caching
+COPY package.json package-lock.json* ./
+# use npm install with safe flags inside the container
+RUN npm install --legacy-peer-deps --silent
 COPY . .
 RUN npm run build
 
-# 2. Serwowanie statyczne przez nginx
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
-
-# prosty config: serwujemy statyczny frontend na porcie 80
 EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
