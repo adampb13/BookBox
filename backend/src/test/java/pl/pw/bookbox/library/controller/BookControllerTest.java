@@ -37,4 +37,12 @@ public class BookControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].category").value("Programming"));
     }
+
+    @Test
+    public void searchBooks_byYearReturnsResults() throws Exception {
+        mockMvc.perform(get("/api/books/search").param("query", "Clean").param("year","2008"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Clean Code"))
+                .andExpect(jsonPath("$[0].year").value(2008));
+    }
 }

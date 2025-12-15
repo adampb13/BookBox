@@ -34,46 +34,90 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
         long existing = bookRepository.count();
         if (existing < 200) {
             logger.info("Only {} books found in DB — adding sample books up to 200", existing);
-            List<Book> books = new ArrayList<>();
+            List<Book> booksToAdd = new ArrayList<>();
 
-            // keep a few well-known starter books if not already present
-            if (existing == 0) {
+            // ensure a few well-known starter books exist (idempotent)
+            if (!bookRepository.existsByTitle("Clean Code")) {
                 Book b1 = new Book();
                 b1.setTitle("Clean Code");
                 b1.setAuthor("Robert C. Martin");
                 b1.setCategory("Programming");
                 b1.setAvailable(true);
-                books.add(b1);
+                b1.setYear(2008);
+                booksToAdd.add(b1);
+            }
 
+            if (!bookRepository.existsByTitle("The Pragmatic Programmer")) {
                 Book b2 = new Book();
                 b2.setTitle("The Pragmatic Programmer");
                 b2.setAuthor("Andrew Hunt");
                 b2.setCategory("Programming");
                 b2.setAvailable(true);
-                books.add(b2);
+                b2.setYear(1999);
+                booksToAdd.add(b2);
+            }
 
+            if (!bookRepository.existsByTitle("Design Patterns")) {
                 Book b3 = new Book();
                 b3.setTitle("Design Patterns");
                 b3.setAuthor("Erich Gamma");
                 b3.setCategory("Programming");
                 b3.setAvailable(true);
-                books.add(b3);
+                b3.setYear(1994);
+                booksToAdd.add(b3);
             }
 
-            // add a larger stack of sample books for testing/search
+            // add a larger stack of sample books for testing/search (skip existing titles)
             String[] categories = new String[]{"Programming","Fiction","Science","History","Philosophy","Art","Biography","Business"};
             for (int i = 4; i <= 200; i++) {
+                String title = "Sample Book " + i;
+                if (bookRepository.existsByTitle(title)) {
+                    continue;
+                }
                 Book b = new Book();
-                b.setTitle("Sample Book " + i);
+                b.setTitle(title);
                 b.setAuthor("Author " + ((i % 30) + 1));
                 b.setCategory(categories[i % categories.length]);
                 // make two-thirds available
                 b.setAvailable(i % 3 != 0);
-                books.add(b);
+                b.setYear(1950 + (i % 75));
+                booksToAdd.add(b);
             }
 
-            bookRepository.saveAll(books);
-            logger.info("Seeded {} books (including generated stack)", books.size());
+            if (!booksToAdd.isEmpty()) {
+                bookRepository.saveAll(booksToAdd);
+                logger.info("Seeded {} books (including generated stack)", booksToAdd.size());
+            } else {
+                logger.info("No new books to seed — existing entries satisfied sample threshold");
+            }
+
+
+        }
+
+        // Backfill missing publication years for existing records (idempotent)
+        var missingYears = bookRepository.findByYearIsNull();
+        if (!missingYears.isEmpty()) {
+            for (var b : missingYears) {
+                // prefer known well-known starter books
+                if ("Clean Code".equals(b.getTitle())) {
+                    b.setYear(2008);
+                } else if ("The Pragmatic Programmer".equals(b.getTitle())) {
+                    b.setYear(1999);
+                } else if ("Design Patterns".equals(b.getTitle())) {
+                    b.setYear(1994);
+                } else if (b.getTitle() != null && b.getTitle().startsWith("Sample Book ")) {
+                    try {
+                        int n = Integer.parseInt(b.getTitle().substring("Sample Book ".length()).trim());
+                        b.setYear(1950 + (n % 75));
+                    } catch (NumberFormatException ignored) {
+                        b.setYear(2000);
+                    }
+                } else {
+                    b.setYear(2000);
+                }
+            }
+            bookRepository.saveAll(missingYears);
+            logger.info("Backfilled publication_year for {} existing books", missingYears.size());
         }
 
         // ensure an admin user exists for management UI

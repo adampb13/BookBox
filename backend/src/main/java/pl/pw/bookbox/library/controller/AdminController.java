@@ -60,7 +60,7 @@ public class AdminController {
                                         @RequestBody Book updated) {
         if (!authorized(key, userId)) return ResponseEntity.status(403).body("Forbidden");
         return bookRepository.findById(id).map(b -> {
-            b.setTitle(updated.getTitle()); b.setAuthor(updated.getAuthor()); b.setCategory(updated.getCategory()); b.setAvailable(updated.isAvailable());
+            b.setTitle(updated.getTitle()); b.setAuthor(updated.getAuthor()); b.setCategory(updated.getCategory()); b.setAvailable(updated.isAvailable()); b.setYear(updated.getYear());
             return ResponseEntity.ok(bookRepository.save(b));
         }).orElse(ResponseEntity.notFound().build());
     }

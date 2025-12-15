@@ -1,7 +1,14 @@
 const API_BASE = import.meta.env.VITE_API_BASE ?? 'http://localhost:8080'
 
-export async function fetchBooks(query?: string) {
-  const url = query ? `${API_BASE}/api/books/search?query=${encodeURIComponent(query)}` : `${API_BASE}/api/books`
+export async function fetchBooks(query?: string, category?: string, year?: number) {
+  let url = `${API_BASE}/api/books`
+  if (query || category || year) {
+    const params = new URLSearchParams()
+    if (query) params.append('query', query)
+    if (category) params.append('category', category)
+    if (year) params.append('year', String(year))
+    url = `${API_BASE}/api/books/search?${params.toString()}`
+  }
   const res = await fetch(url)
   if (!res.ok) throw new Error('Failed to fetch books')
   return res.json()

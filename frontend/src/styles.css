@@ -49,6 +49,9 @@ body{
 
 .form{ max-width:420px; background:var(--glass); padding:14px; border-radius:8px }
 .form input{ display:block; width:100%; padding:10px 12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(15,23,42,0.06); background:transparent }
+.form label{ display:inline-flex; align-items:center; gap:8px; margin-bottom:10px }
+.form input[type="number"]{ width:120px }
+.book-actions{ margin-top:10px; display:flex; align-items:center }
 .btn{ padding:10px 14px; border-radius:8px; border:none; cursor:pointer; background:var(--primary); color:#fff; font-weight:600 }
 .btn.secondary{ background:transparent; color:var(--primary-600); border:1px solid rgba(79,70,229,0.12) }
 

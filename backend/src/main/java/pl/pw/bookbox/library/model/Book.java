@@ -14,6 +14,8 @@ public class Book {
     private String author;
     private String category;
     private boolean available;
+    @jakarta.persistence.Column(name = "publication_year")
+    private Integer year;
 
     // Getters and Setters
     public Long getId() {
@@ -55,4 +57,12 @@ public class Book {
     public void setAvailable(boolean available) {
         this.available = available;
     }
-}
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+} 

@@ -6,14 +6,16 @@ public class BookDto {
     public String author;
     public String category;
     public boolean available;
+    public Integer year;
 
     public BookDto() {}
 
-    public BookDto(Long id, String title, String author, String category, boolean available) {
+    public BookDto(Long id, String title, String author, String category, boolean available, Integer year) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.category = category;
         this.available = available;
+        this.year = year;
     }
 }

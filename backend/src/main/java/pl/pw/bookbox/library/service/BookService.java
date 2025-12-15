@@ -17,7 +17,16 @@ public class BookService {
         return bookRepository.findByAvailableTrue();
     }
 
-    public List<Book> searchBooks(String query) {
-        return bookRepository.findByAuthorContainingOrTitleContainingOrCategoryContaining(query, query, query);
+    public List<Book> searchBooks(String query, String category, Integer year) {
+        List<Book> base;
+        if (query == null || query.isBlank()) {
+            base = bookRepository.findAll();
+        } else {
+            base = bookRepository.findByAuthorContainingOrTitleContainingOrCategoryContaining(query, query, query);
+        }
+        return base.stream()
+                .filter(b -> category == null || category.isBlank() || (b.getCategory() != null && b.getCategory().equalsIgnoreCase(category)))
+                .filter(b -> year == null || (b.getYear() != null && b.getYear().equals(year)))
+                .toList();
     }
 }

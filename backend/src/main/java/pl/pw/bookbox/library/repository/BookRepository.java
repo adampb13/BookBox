@@ -8,4 +8,6 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findByAvailableTrue();
     List<Book> findByAuthorContainingOrTitleContainingOrCategoryContaining(String author, String title, String category);
+    boolean existsByTitle(String title);
+    List<Book> findByYearIsNull();
 }

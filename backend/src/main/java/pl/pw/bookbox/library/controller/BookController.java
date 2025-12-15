@@ -27,14 +27,16 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public List<BookDto> searchBooks(@RequestParam String query) {
-        return bookService.searchBooks(query).stream()
+    public List<BookDto> searchBooks(@RequestParam(required = false) String query,
+                                     @RequestParam(required = false) String category,
+                                     @RequestParam(required = false) Integer year) {
+        return bookService.searchBooks(query, category, year).stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     private BookDto toDto(Book b) {
-        return new BookDto(b.getId(), b.getTitle(), b.getAuthor(), b.getCategory(), b.isAvailable());
+        return new BookDto(b.getId(), b.getTitle(), b.getAuthor(), b.getCategory(), b.isAvailable(), b.getYear());
     }
 }
 

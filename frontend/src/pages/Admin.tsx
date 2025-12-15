@@ -51,7 +51,7 @@ export default function Admin() {
   async function createBook(e:React.FormEvent) {
     e.preventDefault()
     const form = e.target as any
-    const body = { title: form.title.value, author: form.author.value, category: form.category.value, available: form.available.checked }
+    const body = { title: form.title.value, author: form.author.value, category: form.category.value, available: form.available.checked, year: form.year.value ? Number(form.year.value) : null }
     const r = await fetch('/api/admin/books', { method:'POST', body: JSON.stringify(body), headers: authHeaders() })
     if (!r.ok) setMessage(await r.text())
     form.reset(); loadAll()
@@ -72,6 +72,7 @@ export default function Admin() {
           <input name="title" placeholder="Title" required />
           <input name="author" placeholder="Author" />
           <input name="category" placeholder="Category" />
+          <input name="year" type="number" placeholder="Year (e.g., 2020)" />
           <label><input type="checkbox" name="available" defaultChecked /> Available</label>
           <button className="btn" type="submit">Create Book</button>
         </form>
@@ -81,7 +82,7 @@ export default function Admin() {
               <div className="thumb">{b.title?.charAt(0)||'B'}</div>
               <div className="book-details">
                 <strong>{b.title}</strong>
-                <div className="book-meta">{b.author} — {b.category}</div>
+                <div className="book-meta">{b.author} — {b.category}{b.year ? ` — ${b.year}` : ''}</div>
                 <div style={{marginTop:8}}>
                   <button className="btn secondary" onClick={()=>delBook(b.id)}>Delete</button>
                 </div>
