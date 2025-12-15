@@ -18,6 +18,6 @@ public class BookService {
     }
 
     public List<Book> searchBooks(String query) {
-        return bookRepository.findByAuthorContainingOrTitleContaining(query, query);
+        return bookRepository.findByAuthorContainingOrTitleContainingOrCategoryContaining(query, query, query);
     }
 }

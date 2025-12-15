@@ -21,6 +21,12 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private pl.pw.bookbox.library.repository.UserRepository userRepository;
+
+    @Autowired
+    private pl.pw.bookbox.library.service.UserService userService;
+
     @Override
     @Transactional
     public void onApplicationEvent(ApplicationReadyEvent event) {
@@ -68,6 +74,21 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 
             bookRepository.saveAll(books);
             logger.info("Seeded {} books (including generated stack)", books.size());
+        }
+
+        // ensure an admin user exists for management UI
+        String adminEmail = "admin@bookbox.local";
+        var existingAdmin = userRepository.findByEmail(adminEmail);
+        if (existingAdmin == null) {
+            logger.info("Creating default admin user: {}", adminEmail);
+            var admin = userService.registerUser(adminEmail, "admin", "Administrator");
+            admin.setAdmin(true);
+            userRepository.save(admin);
+            logger.info("Admin user created with email '{}' and password 'admin' (change in production)", adminEmail);
+        } else if (!existingAdmin.isAdmin()) {
+            logger.info("Promoting existing user {} to admin", adminEmail);
+            existingAdmin.setAdmin(true);
+            userRepository.save(existingAdmin);
         }
     }
 }

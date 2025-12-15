@@ -5,6 +5,7 @@ import Books from './pages/Books'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import MyLoans from './pages/MyLoans'
+import Admin from './pages/Admin'
 import './styles.css'
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
           <Link to="/register">Register</Link>
           <Link to="/login">Login</Link>
           <Link to="/my-loans">My Loans</Link>
+          {((user && (user as any).admin) || (user && (user as any).email === 'admin@bookbox.local') ) && <Link to="/admin">Admin</Link>}
         </div>
         <div style={{marginLeft:'auto', display:'flex', gap:10, alignItems:'center'}}>
           {user ? (
@@ -54,6 +56,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/my-loans" element={<MyLoans />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </BrowserRouter>
   )

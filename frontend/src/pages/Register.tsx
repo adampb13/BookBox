@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { registerUser } from '../api'
+import { useNavigate } from 'react-router-dom'
 
 export default function Register() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
@@ -17,6 +19,7 @@ export default function Register() {
       window.dispatchEvent(new Event('auth-change'))
       setMessage('Registered and logged in')
       setMessageType('success')
+      if (user.admin) navigate('/admin')
     } catch (e:any) { setMessage(e.message); setMessageType('error') }
   }
 

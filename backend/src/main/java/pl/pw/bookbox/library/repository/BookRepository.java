@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findByAvailableTrue();
-    List<Book> findByAuthorContainingOrTitleContaining(String author, String title);
+    List<Book> findByAuthorContainingOrTitleContainingOrCategoryContaining(String author, String title, String category);
 }

@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { loginUser } from '../api'
+import { useNavigate } from 'react-router-dom'
 
 export default function Login() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState<string | null>(null)
@@ -17,6 +19,7 @@ export default function Login() {
       window.dispatchEvent(new Event('auth-change'))
       setMessage('Logged in')
       setMessageType('success')
+      if (user.admin) navigate('/admin')
     } catch (e:any) { setMessage(e.message); setMessageType('error') }
   }
 

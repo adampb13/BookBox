@@ -1,5 +1,6 @@
 package pl.pw.bookbox.library.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public class User {
 
     private String email;
     private String password;
+    private boolean admin;
     private String name;
 
     @OneToMany(mappedBy = "user")
@@ -36,12 +38,19 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
+    @JsonIgnore
+    public String getPassword() { return password; }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     public String getName() {
@@ -52,6 +61,7 @@ public class User {
         this.name = name;
     }
 
+    @JsonIgnore
     public List<Loan> getLoans() {
         return loans;
     }
