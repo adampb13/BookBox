@@ -20,6 +20,10 @@ body{
 }
 .nav a{ color:var(--primary-600); text-decoration:none; font-weight:600 }
 +.brand{ font-weight:700; color:var(--primary); margin-right:10px; font-size:1.05rem }
++.user-info{ color:var(--muted); font-size:0.95rem }
++.user-info strong{ color:var(--primary-600); margin-left:6px }
++.btn.secondary{ background:transparent; color:var(--primary-600); border:1px solid rgba(79,70,229,0.12); padding:8px 10px }
++.btn.secondary:hover{ background:rgba(67,56,202,0.04) }
 .container{ max-width:980px; margin:28px auto; padding:24px }
 
 .page-header{ display:flex; justify-content:space-between; align-items:center; gap:12px }

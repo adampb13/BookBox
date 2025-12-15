@@ -13,6 +13,8 @@ export default function Register() {
     try {
       const user = await registerUser(email, password, name)
       localStorage.setItem('bookbox_user_id', user.id)
+      localStorage.setItem('bookbox_user', JSON.stringify(user))
+      window.dispatchEvent(new Event('auth-change'))
       setMessage('Registered and logged in')
       setMessageType('success')
     } catch (e:any) { setMessage(e.message); setMessageType('error') }

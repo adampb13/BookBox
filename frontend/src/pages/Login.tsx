@@ -12,6 +12,9 @@ export default function Login() {
     try {
       const user = await loginUser(email, password)
       localStorage.setItem('bookbox_user_id', user.id)
+      localStorage.setItem('bookbox_user', JSON.stringify(user))
+      // notify other parts of the app
+      window.dispatchEvent(new Event('auth-change'))
       setMessage('Logged in')
       setMessageType('success')
     } catch (e:any) { setMessage(e.message); setMessageType('error') }
