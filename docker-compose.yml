@@ -28,13 +28,13 @@ services:
     ports:
       - "8080:8080"
 
-  frontend:
-    build: ./frontend
-    container_name: bbox-frontend
-    depends_on:
-      - backend
-    ports:
-      - "3000:80"
+  # frontend:
+  #   build: ./frontend
+  #   container_name: bbox-frontend
+  #   depends_on:
+  #     - backend
+  #   ports:
+  #     - "3000:80"
 
 volumes:
   db_data:
