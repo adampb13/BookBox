@@ -16,6 +16,7 @@ public class User {
     private String email;
     private String password;
     private boolean admin;
+    private boolean enabled = true;
     private String name;
 
     @OneToMany(mappedBy = "user")
@@ -51,6 +52,14 @@ public class User {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public String getName() {

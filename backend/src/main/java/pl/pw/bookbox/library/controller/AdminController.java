@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.dao.DataIntegrityViolationException;
 import pl.pw.bookbox.library.model.Book;
 import pl.pw.bookbox.library.model.Loan;
 import pl.pw.bookbox.library.model.User;
@@ -88,8 +89,17 @@ public class AdminController {
                                         @PathVariable Long id) {
         if (!authorized(key, userId)) return ResponseEntity.status(403).body("Forbidden");
         if (!userRepository.existsById(id)) return ResponseEntity.notFound().build();
-        userRepository.deleteById(id);
-        return ResponseEntity.ok().build();
+        // Prevent deletion when user has related loans to avoid FK constraint failures
+        if (loanRepository.existsByUserId(id)) {
+            return ResponseEntity.status(409).body("Cannot delete user with existing loans");
+        }
+        try {
+            userRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        } catch (DataIntegrityViolationException ex) {
+            // Catch any remaining DB integrity errors and return a friendly response
+            return ResponseEntity.status(409).body("Cannot delete user due to related data");
+        }
     }
     
     @PostMapping("/users/{id}/promote")
@@ -108,7 +118,14 @@ public class AdminController {
     public ResponseEntity<?> allLoans(@RequestHeader(value = "X-ADMIN-KEY", required = false) String key,
                                       @RequestHeader(value = "X-USER-ID", required = false) Long userId) {
         if (!authorized(key, userId)) return ResponseEntity.status(403).body("Forbidden");
-        return ResponseEntity.ok(loanRepository.findAll());
+        var loans = loanRepository.findAll().stream().map(l -> {
+            String status;
+            if (l.getReturnedAt() != null) status = "returned";
+            else if (l.getReturnDate() != null && l.getReturnDate().isBefore(LocalDate.now())) status = "overdue";
+            else status = "borrowed";
+            return new pl.pw.bookbox.library.dto.LoanDto(l.getId(), l.getUser().getId(), l.getBook().getId(), l.getLoanDate(), l.getReturnDate(), l.getReturnedAt(), status);
+        }).toList();
+        return ResponseEntity.ok(loans);
     }
 
     @PutMapping("/loans/{id}/return")
@@ -117,7 +134,8 @@ public class AdminController {
                                           @PathVariable Long id) {
         if (!authorized(key, userId)) return ResponseEntity.status(403).body("Forbidden");
         return loanRepository.findById(id).map(l -> {
-            l.setReturnDate(LocalDate.now());
+            // mark as returned (record returnedAt separately from due returnDate)
+            l.setReturnedAt(LocalDate.now());
             l.getBook().setAvailable(true);
             bookRepository.save(l.getBook());
             loanRepository.save(l);

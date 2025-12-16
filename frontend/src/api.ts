@@ -37,3 +37,9 @@ export async function fetchLoans(userId: number) {
   if (!res.ok) throw new Error(await res.text())
   return res.json()
 }
+
+export async function updateMe(dto: { name?: string, email?: string, password?: string }) {
+  const res = await fetch(`${API_BASE}/api/users/me`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-USER-ID': String(JSON.parse(localStorage.getItem('bookbox_user')||'null')?.id || '') }, body: JSON.stringify(dto) })
+  if (!res.ok) throw new Error(await res.text())
+  return res.json()
+}

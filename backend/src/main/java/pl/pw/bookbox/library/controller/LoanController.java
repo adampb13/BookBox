@@ -11,6 +11,7 @@ import pl.pw.bookbox.library.repository.BookRepository;
 import pl.pw.bookbox.library.repository.UserRepository;
 import pl.pw.bookbox.library.service.LoanService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -35,8 +36,9 @@ public class LoanController {
 		}
 		try {
 			Loan loan = loanService.createLoan(u, b);
+			String status = "borrowed";
 			pl.pw.bookbox.library.dto.LoanDto resp = new pl.pw.bookbox.library.dto.LoanDto(
-					loan.getId(), loan.getUser().getId(), loan.getBook().getId(), loan.getLoanDate(), loan.getReturnDate());
+					loan.getId(), loan.getUser().getId(), loan.getBook().getId(), loan.getLoanDate(), loan.getReturnDate(), loan.getReturnedAt(), status);
 			return ResponseEntity.ok(resp);
 		} catch (IllegalStateException ex) {
 			return ResponseEntity.badRequest().body(ex.getMessage());
@@ -46,7 +48,13 @@ public class LoanController {
 	@GetMapping("/user/{userId}")
 	public List<pl.pw.bookbox.library.dto.LoanDto> getLoansForUser(@PathVariable Long userId) {
 		return loanService.getLoansForUser(userId).stream()
-				.map(l -> new pl.pw.bookbox.library.dto.LoanDto(l.getId(), l.getUser().getId(), l.getBook().getId(), l.getLoanDate(), l.getReturnDate()))
+				.map(l -> {
+					String status;
+					if (l.getReturnedAt() != null) status = "returned";
+					else if (l.getReturnDate() != null && l.getReturnDate().isBefore(LocalDate.now())) status = "overdue";
+					else status = "borrowed";
+					return new pl.pw.bookbox.library.dto.LoanDto(l.getId(), l.getUser().getId(), l.getBook().getId(), l.getLoanDate(), l.getReturnDate(), l.getReturnedAt(), status);
+				})
 				.toList();
 	}
 }

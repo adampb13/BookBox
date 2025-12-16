@@ -17,6 +17,12 @@ export default function Admin() {
 
   useEffect(() => { loadAll() }, [adminKey])
 
+  useEffect(() => {
+    const handler = (e:any) => { setMessage(e?.reason?.message || String(e?.reason || e)) }
+    window.addEventListener('unhandledrejection', handler)
+    return () => window.removeEventListener('unhandledrejection', handler)
+  }, [])
+
   async function loadAll() {
     try {
       const r1 = await fetch('/api/admin/books', { headers: authHeaders() })
@@ -37,9 +43,17 @@ export default function Admin() {
   }
 
   async function delBook(id:number) {
-    const r = await fetch(`/api/admin/books/${id}`, { method: 'DELETE', headers: authHeaders() })
-    if (!r.ok) setMessage(await r.text())
-    loadAll()
+    try {
+      const r = await fetch(`/api/admin/books/${id}`, { method: 'DELETE', headers: authHeaders() })
+      if (!r.ok) {
+        const txt = await r.text()
+        setMessage(txt || `Delete failed: ${r.status}`)
+        return
+      }
+      // optimistic UI update
+      setBooks(bs => bs.filter(b => b.id !== id))
+      setMessage('Book deleted')
+    } catch (e:any) { setMessage(e.message || String(e)) }
   }
 
   async function markReturn(id:number) {
@@ -94,17 +108,24 @@ export default function Admin() {
 
       <section style={{marginTop:24}}>
         <h3>Loans</h3>
-        {loans.map(l=> (
+        {loans.map(l=> {
+          const overdue = l.status === 'overdue'
+          const returned = l.status === 'returned'
+          return (
           <div key={l.id} className="book">
             <div className="book-details">
-              <div>Loan #{l.id} — Book: {l.book.id} — User: {l.user.id}</div>
+              <div style={{display:'flex',alignItems:'center',gap:12}}>
+                <div style={{padding:'2px 8px',borderRadius:4,background: overdue ? '#f8d7da' : returned ? '#dff0d8' : '#f0f0f0'}}>{l.status || (returned ? 'returned' : overdue ? 'overdue' : 'borrowed')}</div>
+                <div>Loan #{l.id} — Book: {l.bookId || l.book?.id} — User: {l.userId || l.user?.id}</div>
+              </div>
               <div>Loan date: {l.loanDate} — Return date: {l.returnDate}</div>
+              {l.returnedAt && <div>Returned at: {l.returnedAt}</div>}
               <div style={{marginTop:8}}>
                 <button className="btn" onClick={()=>markReturn(l.id)}>Mark Returned</button>
               </div>
             </div>
           </div>
-        ))}
+        )})}
       </section>
 
       <section style={{marginTop:24}}>
@@ -114,8 +135,21 @@ export default function Admin() {
             <div className="book-details">
               <div style={{display:'flex',alignItems:'center',gap:8}}>
                 <div><strong>{u.name || u.email}</strong> ({u.email}) {u.admin ? ' — Admin' : ''}</div>
-                {!u.admin && <button className="btn" onClick={async ()=>{ const r = await fetch(`/api/admin/users/${u.id}/promote`, {method:'POST', headers: authHeaders()}); if (!r.ok) setMessage(await r.text()); loadAll() }}>Promote to admin</button>}
-              </div>
+                {!u.admin && <>
+                  <button className="btn" onClick={async ()=>{ try {
+                      const r = await fetch(`/api/admin/users/${u.id}/promote`, {method:'POST', headers: authHeaders()});
+                      if (!r.ok) { setMessage(await r.text()); return }
+                      setMessage('User promoted')
+                      loadAll()
+                    } catch (e:any) { setMessage(e.message || String(e)) }
+                  }}>Promote to admin</button>
+                <button className="btn secondary" style={{marginLeft:8}} onClick={async ()=>{ try {
+                      const r = await fetch(`/api/admin/users/${u.id}`, {method:'DELETE', headers: authHeaders()});
+                      if (!r.ok) { setMessage(await r.text()); return }
+                      setUsers(us => us.filter(x => x.id !== u.id))
+                      setMessage('User deleted')
+                    } catch (e:any) { setMessage(e.message || String(e)) }
+                }}>Delete</button></>}</div>
             </div>
           </div>
         ))}

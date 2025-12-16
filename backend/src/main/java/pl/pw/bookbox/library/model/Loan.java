@@ -21,6 +21,7 @@ public class Loan {
 
     private LocalDate loanDate;
     private LocalDate returnDate;
+    private LocalDate returnedAt;
 
     // Getters and Setters
     public Long getId() {
@@ -61,5 +62,13 @@ public class Loan {
 
     public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
+    }
+
+    public LocalDate getReturnedAt() {
+        return returnedAt;
+    }
+
+    public void setReturnedAt(LocalDate returnedAt) {
+        this.returnedAt = returnedAt;
     }
 }
