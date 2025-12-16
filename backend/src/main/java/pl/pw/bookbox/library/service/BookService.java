@@ -17,6 +17,10 @@ public class BookService {
         return bookRepository.findByAvailableTrue();
     }
 
+    public List<Book> getAllBooks() {
+        return bookRepository.findAll();
+    }
+
     public List<Book> searchBooks(String query, String category, Integer year) {
         List<Book> base;
         if (query == null || query.isBlank()) {

@@ -4,7 +4,8 @@ import Books from '../pages/Books'
 
 const mockBooks = [
   { id: 1, title: 'Clean Code', author: 'Robert C. Martin', category: 'Programming', available: true, year: 2008 },
-  { id: 2, title: 'Design Patterns', author: 'Erich Gamma', category: 'Programming', available: true, year: 1994 }
+  { id: 2, title: 'Design Patterns', author: 'Erich Gamma', category: 'Programming', available: true, year: 1994 },
+  { id: 3, title: 'Borrowed Book', author: 'Some Author', category: 'Fiction', available: false, year: 2010 }
 ]
 
 beforeEach(() => {

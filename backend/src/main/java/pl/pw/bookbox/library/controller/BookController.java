@@ -20,8 +20,9 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping
-    public List<BookDto> getAvailableBooks() {
-        return bookService.getAvailableBooks().stream()
+    public List<BookDto> getBooks() {
+        // Return all books on the main listing so unavailable books are visible in the UI
+        return bookService.getAllBooks().stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }

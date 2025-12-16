@@ -25,6 +25,14 @@ public class BookControllerTest {
     }
 
     @Test
+    public void listBooks_includesUnavailable() throws Exception {
+        // /api/books should include books that are not available (seed makes some unavailable)
+        mockMvc.perform(get("/api/books"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[?(@.available == false)]").exists());
+    }
+
+    @Test
     public void searchBooks_returnsFiltered() throws Exception {
         mockMvc.perform(get("/api/books/search").param("query", "Clean"))
                 .andExpect(status().isOk())
