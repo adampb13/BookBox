@@ -22,7 +22,7 @@ docker
 ```powershell
 docker compose up --build
 ```
-served on http://localhost:3000
+adres frontendu: http://localhost:3000
 
 ## Admin
 Logowanie na konto admina:
